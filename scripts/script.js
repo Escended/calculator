@@ -1,5 +1,5 @@
 function add(a, b) {
-    return a + b;
+    return +a + +b;
 }
 
 function subtract(a, b) {
@@ -15,7 +15,7 @@ function divide(a, b) {
 }
 
 function operate(op, a, b) {
-    switch(op) {
+    switch (op) {
         case '+':
             return add(a, b);
         case '-':
@@ -27,16 +27,68 @@ function operate(op, a, b) {
     }
     return result;
 }
+// get number
+let firstNumber = "";
+let nextNumber = "";
+let op = '';
+let isEquals = false;
 
+function getNumber() {
+    let numbers = document.querySelectorAll('.numbers');
 
-function makeRows(rows, cols) {
-    container.style.setProperty('--grid-rows', rows);
-    container.style.setProperty('--grid-cols', cols);
-    for (c = 0; c < (rows * cols); c++) {
-        let cell = document.createElement('div');
-        cell.textContent = c + 1;
-        container.appendChild(cell).className = "grid-item";
-    }
+    numbers.forEach((number) => {
+        number.addEventListener('click', () => {
+            if (isEquals) {
+                clear();
+            }
+            if (firstNumber.length < 8 && op === '') {
+                firstNumber += number.textContent;
+                displayOnScreen(firstNumber);
+            } else if (nextNumber.length < 8) {
+                nextNumber += number.textContent;
+                displayOnScreen(nextNumber);
+            }
+        })
+    });
 }
-//makeRows(1,4);
 
+function clear() {
+    firstNumber = "";
+    nextNumber = "";
+    op = "";
+    isEquals = false;
+}
+
+function checkEquals() {
+    const equals = document.querySelector('.equals');
+    equals.addEventListener('click', () => {
+        isEquals = true;
+        let sum = operate(op, firstNumber, nextNumber);
+        displayOnScreen(sum);
+    });
+}
+
+// Display current number on screen
+function displayOnScreen(input) {
+    let screen = document.querySelector('.screen');
+    screen.textContent = input;
+}
+
+// get operator
+function getOperator() {
+    let operators = document.querySelectorAll('.operators');
+    operators.forEach((operator) => {
+        operator.addEventListener('click', () => {
+            op = operator.textContent;
+            console.log(op);
+        });
+    });
+}
+
+function doCalc() {
+    getNumber();
+    getOperator();
+    checkEquals();
+}
+
+doCalc();
