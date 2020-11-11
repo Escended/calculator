@@ -25,12 +25,12 @@ function operate(op, a, b) {
         case '/':
             return divide(a, b);
     }
-    return result;
 }
 // get number
 let firstNumber = "";
 let nextNumber = "";
 let op = '';
+let operatorOn = false;
 let isEquals = false;
 
 function getNumber() {
@@ -39,31 +39,39 @@ function getNumber() {
     numbers.forEach((number) => {
         number.addEventListener('click', () => {
             if (isEquals) {
-                clear();
+                clearCalc();
             }
-            if (firstNumber.length < 8 && op === '') {
+            if (firstNumber.length < 7 && op === '') {
                 firstNumber += number.textContent;
                 displayOnScreen(firstNumber);
-            } else if (nextNumber.length < 8) {
+            } else if (nextNumber.length < 7) {
                 nextNumber += number.textContent;
                 displayOnScreen(nextNumber);
             }
-        })
+        });
     });
 }
 
-function clear() {
+
+const clear = document.querySelector('.clear');
+clear.addEventListener('click', () => {
+    clearCalc();
+    displayOnScreen(0);
+});
+
+function clearCalc() {
     firstNumber = "";
     nextNumber = "";
     op = "";
+    sum = 0;
     isEquals = false;
 }
-
+let sum = 0;
 function checkEquals() {
     const equals = document.querySelector('.equals');
     equals.addEventListener('click', () => {
         isEquals = true;
-        let sum = operate(op, firstNumber, nextNumber);
+        sum = operate(op, firstNumber, nextNumber);
         displayOnScreen(sum);
     });
 }
@@ -71,7 +79,13 @@ function checkEquals() {
 // Display current number on screen
 function displayOnScreen(input) {
     let screen = document.querySelector('.screen');
-    screen.textContent = input;
+    let num = parseFloat(input);
+    console.log(typeof input);
+    // if (num.isFloat) {
+    //     input = input.toFixed(5);
+    //     console.log("worked");
+    // }
+    screen.textContent = num.toFixed(2);
 }
 
 // get operator
@@ -79,7 +93,14 @@ function getOperator() {
     let operators = document.querySelectorAll('.operators');
     operators.forEach((operator) => {
         operator.addEventListener('click', () => {
+            if (operatorOn) {
+                firstNumber = operate(op, firstNumber, nextNumber);
+                nextNumber = "";
+                displayOnScreen(firstNumber);
+                console.log("worked");
+            }
             op = operator.textContent;
+            operatorOn = true;
             console.log(op);
         });
     });
